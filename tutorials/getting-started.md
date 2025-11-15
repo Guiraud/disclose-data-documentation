@@ -43,34 +43,43 @@ Vous devriez voir quelque chose comme `Python 3.9.7` ou une version supérieure.
 
 ## Installation
 
-### Étape 1 : Créer un environnement virtuel (recommandé)
+### Méthode 1 : Avec uv (recommandé - ultra rapide)
 
-Un environnement virtuel permet d'isoler les dépendances de ce projet.
+[uv](https://github.com/astral-sh/uv) est un gestionnaire de paquets Python extrêmement rapide développé par Astral.
+
+#### Étape 1 : Installer uv
+
+```bash
+# Sur macOS/Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Sur Windows (PowerShell)
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+#### Étape 2 : Créer un environnement virtuel et installer les dépendances
 
 ```bash
 # Créer un environnement virtuel
-python -m venv disclose-env
+uv venv
 
 # L'activer (sur macOS/Linux)
-source disclose-env/bin/activate
+source .venv/bin/activate
 
 # L'activer (sur Windows)
-disclose-env\Scripts\activate
-```
+.venv\Scripts\activate
 
-### Étape 2 : Installer les dépendances
-
-```bash
-pip install python-documentcloud
+# Installer python-documentcloud
+uv pip install python-documentcloud
 ```
 
 Ou, si vous avez cloné ce dépôt :
 
 ```bash
-pip install -r requirements.txt
+uv pip install -r requirements.txt
 ```
 
-### Étape 3 : Vérifier l'installation
+#### Étape 3 : Vérifier l'installation
 
 Créez un fichier `test.py` avec ce code :
 
@@ -87,6 +96,29 @@ python test.py
 ```
 
 Si vous voyez "✓ Installation réussie !", vous êtes prêt !
+
+---
+
+### Méthode 2 : Avec pip classique
+
+Si vous préférez utiliser pip :
+
+```bash
+# Créer un environnement virtuel
+python -m venv disclose-env
+
+# L'activer (sur macOS/Linux)
+source disclose-env/bin/activate
+
+# L'activer (sur Windows)
+disclose-env\Scripts\activate
+
+# Installer les dépendances
+pip install python-documentcloud
+
+# Ou si vous avez cloné le dépôt
+pip install -r requirements.txt
+```
 
 ---
 

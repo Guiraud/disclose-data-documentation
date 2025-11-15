@@ -6,6 +6,12 @@ Ce dossier contient des exemples de code Python pour interroger la collection de
 
 Installez les dépendances requises :
 
+**Avec uv (recommandé) :**
+```bash
+uv pip install -r ../requirements.txt
+```
+
+**Ou avec pip :**
 ```bash
 pip install -r ../requirements.txt
 ```

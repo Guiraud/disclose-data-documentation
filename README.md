@@ -18,7 +18,16 @@
 
 **Nouveau dans l'utilisation de cette API ?** Consultez notre [tutoriel pour débutants](tutorials/getting-started.md) qui vous guide pas à pas.
 
-**Installation rapide :**
+**Installation rapide avec uv (recommandé) :**
+```bash
+# Installer uv si ce n'est pas déjà fait
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Installer les dépendances
+uv pip install python-documentcloud
+```
+
+**Ou avec pip classique :**
 ```bash
 pip install python-documentcloud
 ```
@@ -264,6 +273,16 @@ python scripts/get_statistics.py --year 2024
 
 Pour utiliser tous les exemples et scripts :
 
+**Avec uv (recommandé - plus rapide) :**
+```bash
+# Installer uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Installer toutes les dépendances
+uv pip install -r requirements.txt
+```
+
+**Ou avec pip classique :**
 ```bash
 pip install -r requirements.txt
 ```

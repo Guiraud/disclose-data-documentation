@@ -6,6 +6,12 @@ Ce dossier contient des scripts pour créer des visualisations et analyses graph
 
 Installez les dépendances nécessaires :
 
+**Avec uv (recommandé) :**
+```bash
+uv pip install -r ../requirements.txt
+```
+
+**Ou avec pip :**
 ```bash
 pip install -r ../requirements.txt
 ```
@@ -235,6 +241,12 @@ python 05_comprehensive_dashboard.py
 
 ### Erreur : "ModuleNotFoundError: No module named 'matplotlib'"
 
+**Avec uv :**
+```bash
+uv pip install matplotlib seaborn
+```
+
+**Ou avec pip :**
 ```bash
 pip install matplotlib seaborn
 ```

@@ -6,6 +6,12 @@ Ce dossier contient des scripts prêts à l'emploi pour interroger et analyser l
 
 Installez d'abord les dépendances :
 
+**Avec uv (recommandé) :**
+```bash
+uv pip install -r ../requirements.txt
+```
+
+**Ou avec pip :**
 ```bash
 pip install -r ../requirements.txt
 ```
