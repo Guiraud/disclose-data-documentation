@@ -2,3 +2,4 @@ python-documentcloud>=3.0.0
 pandas>=1.5.0
 matplotlib>=3.5.0
 seaborn>=0.12.0
+mcp>=0.9.0

@@ -5,6 +5,7 @@
 ## Table des matières
 
 - [Démarrage rapide](#démarrage-rapide)
+- [Serveur MCP](#serveur-mcp)
 - [Généralités](#généralités)
 - [Champs DocumentCloud](#champs-documentcloud)
 - [Métadonnées des documents](#métadonnées-des-documents)
@@ -49,6 +50,59 @@ print(f"Nombre de documents : {results.count}")
 for doc in results[:5]:
     print(f"- {doc.title}")
 ```
+
+## Serveur MCP
+
+🚀 **Nouveau !** Ce projet inclut maintenant un **serveur MCP** (Model Context Protocol) qui permet à Claude et d'autres clients MCP de rechercher et récupérer des documents directement.
+
+### Qu'est-ce que MCP ?
+
+Le Model Context Protocol permet aux modèles d'IA d'accéder à des sources de données externes de manière standardisée. Avec le serveur MCP Disclose Data, vous pouvez :
+
+- Rechercher des documents avec des filtres en langage naturel
+- Récupérer des détails de documents spécifiques
+- Obtenir des statistiques sur la collection
+- Extraire le texte complet des documents (OCR)
+
+### Installation rapide du serveur MCP
+
+```bash
+# Installer les dépendances (incluant MCP)
+uv pip install -r requirements.txt
+
+# Configurer dans Claude Desktop
+# Ajoutez à ~/.config/Claude/claude_desktop_config.json (Linux)
+# ou ~/Library/Application Support/Claude/claude_desktop_config.json (macOS)
+{
+  "mcpServers": {
+    "disclose-data": {
+      "command": "python",
+      "args": ["/chemin/absolu/vers/mcp_server.py"]
+    }
+  }
+}
+```
+
+### Exemples d'utilisation avec Claude
+
+Une fois configuré, vous pouvez simplement demander à Claude :
+
+> "Trouve-moi des documents sur les projets éoliens en Bretagne"
+
+> "Donne-moi les statistiques pour 2024"
+
+> "Récupère le texte du document 123456"
+
+📖 **Documentation complète** : [MCP_SERVER.md](MCP_SERVER.md)
+
+### Outils MCP disponibles
+
+Le serveur expose 5 outils :
+- `search_documents` : Recherche avec filtres multiples
+- `get_document` : Détails d'un document
+- `get_statistics` : Statistiques de la collection
+- `list_authorities` : Liste des autorités environnementales
+- `get_document_text` : Extraction de texte (OCR)
 
 ## Généralités
 
@@ -231,6 +285,22 @@ Vous trouverez une présentation en anglais de ces deux Add-Ons dans [cette vid�
 ## Ressources
 
 Ce dépôt contient de nombreuses ressources pour vous aider à utiliser l'API Disclose Data :
+
+### 🤖 [Serveur MCP](MCP_SERVER.md)
+
+**Nouveau !** Serveur Model Context Protocol pour interroger l'API via Claude ou d'autres clients MCP.
+
+**Fonctionnalités :**
+- Recherche en langage naturel
+- 5 outils MCP (search, get, statistics, etc.)
+- Intégration directe avec Claude Desktop
+- Accès au texte complet des documents (OCR)
+
+**Installation rapide :**
+```bash
+uv pip install -r requirements.txt
+# Puis configurez dans Claude Desktop (voir MCP_SERVER.md)
+```
 
 ### 📚 [Tutoriel débutant](tutorials/getting-started.md)
 
