@@ -122,6 +122,50 @@ pip install -r requirements.txt
 
 ---
 
+### Dépannage installation
+
+#### Problème avec pyenv : "python: command not found"
+
+Si vous utilisez `pyenv` et obtenez cette erreur avec uv :
+
+```
+error: Failed to inspect Python interpreter
+pyenv: python: command not found
+```
+
+**Solution 1 : Spécifier python3**
+```bash
+uv pip install --python python3 python-documentcloud
+```
+
+**Solution 2 : Configurer pyenv global**
+```bash
+# Voir les versions disponibles
+pyenv versions
+
+# Définir une version par défaut (remplacez 3.12.4 par votre version)
+pyenv global 3.12.4
+
+# Vérifier
+python --version
+```
+
+**Solution 3 : Créer un environnement virtuel d'abord**
+```bash
+# uv créera automatiquement un venv avec Python détecté
+uv venv
+
+# Activer le venv
+source .venv/bin/activate  # macOS/Linux
+# ou
+.venv\Scripts\activate  # Windows
+
+# Installer les dépendances (dans le venv, pas de problème)
+uv pip install python-documentcloud
+```
+
+---
+
 ## Premier pas : recherche simple
 
 ### Objectif

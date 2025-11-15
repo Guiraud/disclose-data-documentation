@@ -27,6 +27,12 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 uv pip install python-documentcloud
 ```
 
+> **Note pour utilisateurs de pyenv :** Si vous obtenez une erreur `python: command not found`, utilisez :
+> ```bash
+> uv pip install --python python3 python-documentcloud
+> ```
+> Ou configurez pyenv : `pyenv global 3.12.4` (remplacez par votre version)
+
 **Ou avec pip classique :**
 ```bash
 pip install python-documentcloud
@@ -281,6 +287,11 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 # Installer toutes les dépendances
 uv pip install -r requirements.txt
 ```
+
+> **Note pour utilisateurs de pyenv :** Si vous obtenez une erreur, utilisez :
+> ```bash
+> uv pip install --python python3 -r requirements.txt
+> ```
 
 **Ou avec pip classique :**
 ```bash
