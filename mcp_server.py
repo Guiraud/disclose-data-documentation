@@ -17,9 +17,38 @@ from mcp.types import Tool, TextContent, ImageContent, EmbeddedResource
 
 from documentcloud import DocumentCloud
 
-# Configuration du logging
-logging.basicConfig(level=logging.INFO)
+# Configuration du logging (doit être avant l'import de utils)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 logger = logging.getLogger("disclose-data-mcp")
+
+# Import des utilitaires
+try:
+    from utils import (
+        retry_on_error,
+        validate_date_format,
+        validate_department_code,
+        validate_category,
+        safe_dict_get,
+        APIError,
+        ValidationError,
+    )
+    logger.info("Utilitaires chargés avec succès")
+except ImportError:
+    # Fallback si utils.py n'est pas disponible
+    logger.warning("Module utils non disponible, fonctionnement en mode dégradé")
+    def retry_on_error(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    def validate_date_format(date_str): return True
+    def validate_department_code(code): return True
+    def validate_category(cat): return True
+    def safe_dict_get(data, key, default=None): return data.get(key, default) if data else default
+    class APIError(Exception): pass
+    class ValidationError(Exception): pass
 
 # Constantes
 PROJECT_ID = 219834
@@ -31,6 +60,21 @@ app = Server("disclose-data-server")
 dc_client = DocumentCloud()
 
 
+# Fonctions wrapper avec retry logic pour appels API
+@retry_on_error(max_attempts=3, initial_delay=1.0, backoff_factor=2.0)
+def search_with_retry(query: str):
+    """Recherche avec retry automatique en cas d'erreur réseau."""
+    logger.debug(f"Recherche avec retry: {query}")
+    return dc_client.documents.search(query)
+
+
+@retry_on_error(max_attempts=3, initial_delay=1.0, backoff_factor=2.0)
+def get_document_with_retry(doc_id: str):
+    """Récupération de document avec retry automatique."""
+    logger.debug(f"Récupération document avec retry: {doc_id}")
+    return dc_client.documents.get(doc_id)
+
+
 def build_query(
     keyword: Optional[str] = None,
     authority: Optional[str] = None,
@@ -39,7 +83,23 @@ def build_query(
     from_date: Optional[str] = None,
     to_date: Optional[str] = None,
 ) -> str:
-    """Construire une requête DocumentCloud avec les filtres fournis."""
+    """
+    Construire une requête DocumentCloud avec les filtres fournis.
+
+    Args:
+        keyword: Mot-clé à rechercher
+        authority: Autorité environnementale
+        department: Code département
+        category: Catégorie de document
+        from_date: Date de début (YYYY-MM-DD)
+        to_date: Date de fin (YYYY-MM-DD)
+
+    Returns:
+        Requête DocumentCloud formatée
+
+    Raises:
+        ValidationError: Si les paramètres sont invalides
+    """
     query_parts = [f"+project:{PROJECT_ID}", '+status:"success"']
 
     if keyword:
@@ -49,10 +109,22 @@ def build_query(
         query_parts.append(f'+data_authority:"{authority}"')
 
     if department:
+        if not validate_department_code(department):
+            logger.warning(f"Code département potentiellement invalide: {department}")
         query_parts.append(f'+data_departments:"{department}"')
 
     if category:
+        if not validate_category(category):
+            raise ValidationError(f"Catégorie invalide: {category}. Valeurs acceptées: Avis, Cadrage, Cas par Cas")
         query_parts.append(f'+data_category:"{category}"')
+
+    if from_date:
+        if not validate_date_format(from_date):
+            raise ValidationError(f"Format de date invalide pour from_date: {from_date}. Format attendu: YYYY-MM-DD")
+
+    if to_date:
+        if not validate_date_format(to_date):
+            raise ValidationError(f"Format de date invalide pour to_date: {to_date}. Format attendu: YYYY-MM-DD")
 
     if from_date or to_date:
         date_from = f'"{from_date}T00:00:00Z"' if from_date else "*"
@@ -243,7 +315,7 @@ async def search_documents_tool(arguments: dict) -> Sequence[TextContent]:
     query = build_query(keyword, authority, department, category, from_date, to_date)
 
     logger.info(f"Recherche: {query}")
-    results = dc_client.documents.search(query)
+    results = search_with_retry(query)
 
     output = [f"# Résultats de recherche\n"]
     output.append(f"**Requête**: `{query}`")
@@ -285,7 +357,7 @@ async def get_document_tool(arguments: dict) -> Sequence[TextContent]:
     doc_id = arguments["document_id"]
 
     logger.info(f"Récupération du document: {doc_id}")
-    doc = dc_client.documents.get(doc_id)
+    doc = get_document_with_retry(doc_id)
 
     return [TextContent(type="text", text=format_document(doc))]
 
@@ -306,7 +378,7 @@ async def get_statistics_tool(arguments: dict) -> Sequence[TextContent]:
     query = ' '.join(query_parts)
 
     logger.info(f"Statistiques: {query}")
-    results = dc_client.documents.search(query)
+    results = search_with_retry(query)
 
     # Collecter des statistiques
     authorities = {}
@@ -359,7 +431,7 @@ async def list_authorities_tool(arguments: dict) -> Sequence[TextContent]:
     limit = arguments.get("limit", 20)
 
     query = f"+project:{PROJECT_ID} +status:\"success\""
-    results = dc_client.documents.search(query)
+    results = search_with_retry(query)
 
     authorities = {}
     for doc in results[:1000]:  # Échantillon
@@ -382,7 +454,7 @@ async def get_document_text_tool(arguments: dict) -> Sequence[TextContent]:
     page = arguments.get("page")
 
     logger.info(f"Récupération du texte: {doc_id} (page: {page})")
-    doc = dc_client.documents.get(doc_id)
+    doc = get_document_with_retry(doc_id)
 
     output = [f"# Texte du document: {doc.title}\n"]
 

@@ -1,9 +1,8 @@
 {
   "mcpServers": {
     "disclose-data": {
-      "command": "python",
-      "args": ["mcp_server.py"],
-      "cwd": ".",
+      "command": "python3",
+      "args": ["/CHEMIN_ABSOLU_VERS_LE_PROJECT/mcp_server.py"],
       "env": {}
     }
   }

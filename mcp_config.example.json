@@ -1,0 +1,56 @@
+{
+  "mcpServers": {
+    "disclose-data": {
+      "comment": "Configuration pour Claude Desktop - Choisissez la configuration appropriée ci-dessous",
+
+      "__EXEMPLES__": {
+
+        "macOS_ou_Linux_avec_python3": {
+          "command": "python3",
+          "args": ["/Users/votre-nom/projets/disclose-data-documentation/mcp_server.py"],
+          "env": {}
+        },
+
+        "macOS_ou_Linux_avec_uv": {
+          "command": "uv",
+          "args": ["run", "--python", "python3", "/Users/votre-nom/projets/disclose-data-documentation/mcp_server.py"],
+          "env": {}
+        },
+
+        "Windows_avec_python": {
+          "command": "python",
+          "args": ["C:\\Users\\VotreNom\\Documents\\disclose-data-documentation\\mcp_server.py"],
+          "env": {}
+        },
+
+        "avec_pyenv": {
+          "command": "/Users/votre-nom/.pyenv/shims/python3",
+          "args": ["/Users/votre-nom/projets/disclose-data-documentation/mcp_server.py"],
+          "env": {
+            "PYENV_VERSION": "3.12.4"
+          }
+        },
+
+        "avec_environnement_virtuel": {
+          "command": "/Users/votre-nom/projets/disclose-data-documentation/.venv/bin/python",
+          "args": ["/Users/votre-nom/projets/disclose-data-documentation/mcp_server.py"],
+          "env": {}
+        }
+      },
+
+      "__INSTRUCTIONS__": [
+        "1. Copiez l'un des exemples ci-dessus dans la section 'disclose-data'",
+        "2. Remplacez '/Users/votre-nom/projets/disclose-data-documentation' par le chemin ABSOLU vers votre projet",
+        "3. Sur macOS/Linux, utilisez 'pwd' dans le dossier du projet pour obtenir le chemin absolu",
+        "4. Sur Windows, utilisez 'cd' pour obtenir le chemin (ex: C:\\Users\\...)",
+        "5. Redémarrez Claude Desktop après avoir modifié la configuration"
+      ],
+
+      "__EMPLACEMENT_FICHIER_CONFIG__": {
+        "macOS": "~/Library/Application Support/Claude/claude_desktop_config.json",
+        "Linux": "~/.config/Claude/claude_desktop_config.json",
+        "Windows": "%APPDATA%\\Claude\\claude_desktop_config.json"
+      }
+    }
+  }
+}
