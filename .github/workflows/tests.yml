@@ -1,0 +1,96 @@
+name: Tests et Qualité du Code
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    name: Tests Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configurer Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Installer uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+    - name: Installer les dépendances
+      run: |
+        uv pip install --system -e ".[dev]"
+
+    - name: Exécuter les tests
+      run: |
+        pytest tests/ --cov=. --cov-report=xml --cov-report=term-missing -v
+
+    - name: Uploader la couverture vers Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: false
+
+  lint:
+    name: Linting et formatage
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configurer Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.12"
+
+    - name: Installer uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+    - name: Installer les dépendances
+      run: |
+        uv pip install --system -e ".[dev]"
+
+    - name: Vérifier avec Black
+      run: |
+        black --check .
+
+    - name: Vérifier avec Ruff
+      run: |
+        ruff check .
+
+  type-check:
+    name: Vérification des types
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configurer Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.12"
+
+    - name: Installer uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+    - name: Installer les dépendances
+      run: |
+        uv pip install --system -e ".[dev]"
+
+    - name: Vérifier les types avec mypy
+      run: |
+        mypy mcp_server.py utils.py --ignore-missing-imports

@@ -1,6 +1,32 @@
-### [Disclose Data - Explorateur de données des autorités environnementales](https://data.disclose.ngo/explorateur-autorite-environnementale)
+# Disclose Data - Documentation API
 
-# Documentation API
+[![Python Version](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![MCP](https://img.shields.io/badge/MCP-enabled-purple.svg)](MCP_SERVER.md)
+[![Status](https://img.shields.io/badge/status-active-success.svg)]()
+
+> **Documentation et outils pour interroger la collection des documents des autorités environnementales françaises**
+
+🌐 **[Explorateur en ligne](https://data.disclose.ngo/explorateur-autorite-environnementale)** | 📚 **[Tutoriel débutant](tutorials/getting-started.md)** | 🤖 **[Serveur MCP](MCP_SERVER.md)**
+
+---
+
+## ⚡ Démarrage ultra-rapide
+
+```python
+from documentcloud import DocumentCloud
+
+client = DocumentCloud()
+results = client.documents.search('+project:219834 +status:"success"')
+
+for doc in results[:5]:
+    print(f"- {doc.title}")
+```
+
+[📖 Guide d'installation complet](#démarrage-rapide)
+
+---
 
 ## Table des matières
 
